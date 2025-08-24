@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/care_link_backend"
+]
+resolver = "2"

@@ -1,0 +1,7 @@
+npm run dev → يشغّل Vite عادي (بدون ICP).
+
+npm run dev:ic → يشغّل replica (dfx start) + يعمل deploy أوتوماتيك.
+
+npm run deploy:frontend → يعيد deploy للـ frontend بس.
+
+npm run watch → يفتح Vite dev server على الشبكة (مفيد للتست على موبايل أو VM).

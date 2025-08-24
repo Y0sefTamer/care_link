@@ -1,0 +1,37 @@
+{
+  "package": {
+    "name": "care_link"
+  },
+  "canisters": {
+    "care_link_backend": {
+      "type": "rust",
+      "main": "src/care_link_backend/lib.rs",
+      "candid": "src/care_link_backend/care_link_backend.did",
+      "package": "care_link_backend"
+    },
+    "care_link_frontend": {
+      "type": "assets",
+      "source": [
+        "src/care_link_frontend/dist"
+      ],
+      "build": [
+        "npm install --prefix src/care_link_frontend",
+        "npm run build --prefix src/care_link_frontend"
+      ]
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:4943",
+      "type": "ephemeral"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
