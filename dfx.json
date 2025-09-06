@@ -9,6 +9,12 @@
       "candid": "src/care_link_backend/care_link_backend.did",
       "package": "care_link_backend"
     },
+    "dashboard_backend": {
+      "type": "rust",
+      "main": "src/dashboard_backend/lib.rs",
+      "candid": "src/dashboard_backend/dashboard_backend.did",
+      "package": "dashboard_backend"
+    },
     "care_link_frontend": {
       "type": "assets",
       "source": [
