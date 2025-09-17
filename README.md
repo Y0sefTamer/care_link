@@ -1,61 +1,106 @@
-# `care_link`
+---
+title: Care Link - README
+---
 
-Welcome to your new `care_link` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+# 📖 Project Description
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+Care Link is a decentralized platform built on the Internet Computer
+(ICP) that connects families with trusted caregivers. The project solves
+the problems of trust, access, and transparency in home healthcare by
+leveraging the security and scalability of blockchain technology.\
+\
+Care Link provides a reliable way for families to:\
+- Find and book verified caregivers\
+- Track care sessions transparently on-chain\
+- Ensure secure payments with no intermediaries\
+- Build trust through decentralized verification\
+\
+By using ICP canisters, the platform ensures decentralized backend logic
+and tamper-proof data storage, making healthcare interactions safe and
+transparent.
 
-To learn more before you start working with `care_link`, see the following documentation available online:
+# ⚙️ Local Development Setup
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Rust Canister Development Guide](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
-- [ic-cdk](https://docs.rs/ic-cdk)
-- [ic-cdk-macros](https://docs.rs/ic-cdk-macros)
-- [Candid Introduction](https://internetcomputer.org/docs/current/developer-docs/backend/candid/)
+## Prerequisites
 
-If you want to start working on your project right away, you might want to try the following commands:
+\- Install DFX SDK
+(https://internetcomputer.org/docs/current/developer-docs/build/install-dfx)\
+- Install Node.js (LTS) (https://nodejs.org/)\
+- Install Git
 
-```bash
-cd care_link/
-dfx help
-dfx canister --help
-```
+## Clone the Repository
 
-## Running the project locally
+\`\`\`bash\
+git clone https://github.com/your-username/care-link.git\
+cd care-link\
+\`\`\`
 
-If you want to test your project locally, you can use the following commands:
+## Start ICP Local Replica
 
-```bash
-# Starts the replica, running in the background
-dfx start --background
+\`\`\`bash\
+dfx start \--background\
+\`\`\`
 
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
-```
+## Deploy the Canisters
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+\`\`\`bash\
+dfx deploy\
+\`\`\`
 
-If you have made changes to your backend canister, you can generate a new candid interface with
+## Run Frontend (if React/Next.js)
 
-```bash
-npm run generate
-```
+\`\`\`bash\
+cd frontend\
+npm install\
+npm run dev\
+\`\`\`
 
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
+Now visit: http://127.0.0.1:4943
 
-If you are making frontend changes, you can start a development server with
+# 🔗 Integration
 
-```bash
-npm start
-```
+\- Smart Contracts (Canisters): expose APIs for authentication,
+caregiver booking, and payments.\
+- Frontend: connects to the canisters using \@dfinity/agent.\
+- Wallets: integrates with Plug Wallet or Internet Identity for
+authentication.
 
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
+Example usage in frontend:\
+\
+\`\`\`javascript\
+import { Actor, HttpAgent } from \"@dfinity/agent\";\
+import { idlFactory as careLink_idl, canisterId as careLink_id } from
+\"declarations/care_link\";\
+\
+const agent = new HttpAgent();\
+const careLinkActor = Actor.createActor(careLink_idl, {\
+agent,\
+canisterId: careLink_id,\
+});\
+\
+// Example: book a caregiver\
+await careLinkActor.bookCaregiver(caregiverId, date, hours);\
+\`\`\`
 
-### Note on frontend environment variables
+# 🤝 Contributing
 
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
+We welcome contributions!\
+\
+1. Fork the repo\
+2. Create your feature branch\
+\`\`\`bash\
+git checkout -b feature/amazing-feature\
+\`\`\`\
+3. Commit changes\
+\`\`\`bash\
+git commit -m \"Add amazing feature\"\
+\`\`\`\
+4. Push to branch\
+\`\`\`bash\
+git push origin feature/amazing-feature\
+\`\`\`\
+5. Open a Pull Request 🎉
 
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+# 📜 License
+
+This project is licensed under the MIT License.
