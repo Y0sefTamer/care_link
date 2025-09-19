@@ -99,6 +99,7 @@ fn create_booking(
     });
     user_id
 }
+#[ic_cdk::update]
 fn confirm_booking(id: u64) -> Result<(), String> {
     BOOKING_MAP.with(|b| {
         let mut store = b.borrow_mut();

@@ -8,7 +8,9 @@ type Booking = record {
   phone_number : text;
   full_name : text;
 };
+type Result = variant { Ok; Err : text };
 service : {
+  confirm_booking : (nat64) -> (Result);
   create_booking : (text, text, text, text, text, text, text) -> (nat64);
   generate_user_id : () -> (nat64);
   get_all_bookings : () -> (vec record { nat64; Booking }) query;
