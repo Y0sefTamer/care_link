@@ -3,6 +3,7 @@ use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemor
 use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap, Storable};
 use std::{borrow::Cow, cell::RefCell};
 use candid::Principal;
+ use ic_cdk::caller;
 use ic_stable_structures::StableCell;
 
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -42,7 +43,7 @@ thread_local! {
      static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
     RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
-     static BOOKING_MAP: RefCell<StableBTreeMap<Principal, Booking, Memory>> = RefCell::new(StableBTreeMap::init(
+     static BOOKING_MAP: RefCell<StableBTreeMap<u64, Booking, Memory>> = RefCell::new(StableBTreeMap::init(
         MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
     ));
 
@@ -79,12 +80,14 @@ fn create_booking(
     time: String,
     number_of_hours: String,
     status: String
- -> u64){
+) -> u64{
     let user_id = generate_user_id();
     let patient = caller();
      let booking = Booking {
         patient,
         nurse,
+        full_name,
+        phone_number,
         date,
         time,
         number_of_hours,
@@ -92,7 +95,7 @@ fn create_booking(
     };
     BOOKING_MAP.with(|b|{
         let mut store = b.borrow_mut();
-        store.insert(id,book);
+        store.insert(user_id,booking);
     });
     user_id
 }

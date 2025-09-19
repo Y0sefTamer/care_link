@@ -1,3 +1,17 @@
+type Booking = record {
+  status : text;
+  patient : principal;
+  number_of_hours : text;
+  date : text;
+  time : text;
+  nurse : text;
+  phone_number : text;
+  full_name : text;
+};
 service : {
-    "greet": (text) -> (text) query;
+  create_booking : (text, text, text, text, text, text, text) -> (nat64);
+  generate_user_id : () -> (nat64);
+  get_all_bookings : () -> (vec record { nat64; Booking }) query;
+  get_my_bookings : () -> (vec record { nat64; Booking }) query;
+  whoami : () -> (principal) query;
 }
