@@ -47,6 +47,7 @@ type WorkInfo = record {
   preferred_location : text;
 };
 service : {
+  delete_patient_remote : (principal) -> (bool);
   fetch_bookings_from_care_link_backend : () -> (Result);
   fetch_patients_from_care_link_backend : () -> (Result_1);
   generate_user_id : () -> (nat64);
@@ -59,5 +60,13 @@ service : {
   set_contact_info : (nat64, text, text, text, text) -> ();
   set_services : (nat64, vec text) -> ();
   set_work_info : (nat64, nat8, blob, text, text, nat32) -> ();
+  update_patient_admin_remote : (
+      principal,
+      opt text,
+      opt nat32,
+      opt text,
+      opt text,
+      opt text,
+    ) -> (opt Patient);
   whoami : () -> (principal) query;
 }

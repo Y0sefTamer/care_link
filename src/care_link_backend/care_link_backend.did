@@ -54,7 +54,7 @@ service : {
   add_patient : (text, nat32, text, text, text) -> (Result);
   confirm_booking : (nat64) -> (Result_1);
   create_booking : (text, text, text, text, text, text, text) -> (nat64);
-  delete_patient : () -> (bool);
+  delete_patient : (principal) -> (bool);
   fetch_nurses_from_dashboard : () -> (Result_2);
   generate_user_id : () -> (nat64);
   get_all_bookings : () -> (vec record { nat64; Booking }) query;
@@ -66,5 +66,13 @@ service : {
   update_patient : (opt text, opt nat32, opt text, opt text, opt text) -> (
       opt Patient,
     );
+  update_patient_admin : (
+      principal,
+      opt text,
+      opt nat32,
+      opt text,
+      opt text,
+      opt text,
+    ) -> (opt Patient);
   whoami : () -> (principal) query;
 }

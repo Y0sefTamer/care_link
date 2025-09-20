@@ -332,13 +332,35 @@ fn update_patient(
         }
     })
 }
-
 #[ic_cdk::update]
-fn delete_patient() -> bool {
-    let caller = ic_cdk::caller();
+fn update_patient_admin(
+    id: Principal,
+    full_name: Option<String>,
+    age: Option<u32>,
+    phone_number: Option<String>,
+    address: Option<String>,
+    email: Option<String>) -> Option<Patient> {
     PATIENT_MAP.with(|p| {
         let mut store = p.borrow_mut();
-        store.remove(&StorablePrincipal(caller)).is_some()
+        if let Some(mut patient) = store.get(&StorablePrincipal(id)) {
+            if let Some(v) = full_name { patient.full_name = v; }
+            if let Some(v) = age { patient.age = v; }
+            if let Some(v) = phone_number { patient.phone_number = v; }
+            if let Some(v) = address { patient.address = v; }
+            if let Some(v) = email { patient.email = v; }
+            store.insert(StorablePrincipal(id), patient.clone());
+            Some(patient)
+        } else {
+            None
+        }
+    })
+}
+
+#[ic_cdk::update]
+fn delete_patient(id: Principal) -> bool {
+    PATIENT_MAP.with(|p| {
+        let mut store = p.borrow_mut();
+        store.remove(&StorablePrincipal(id)).is_some()
     })
 }
 // query fn 

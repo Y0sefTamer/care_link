@@ -301,6 +301,43 @@ async fn fetch_patients_from_care_link_backend() -> Result<Vec<(Principal, Patie
         Err((code, msg)) => Err(format!("Call failed: {:?} {:?}", code, msg)),
     }
 }
+// call the update_patient_admin from the care_link canister
+#[ic_cdk::update]
+async fn update_patient_admin_remote(
+    id: Principal,
+    full_name: Option<String>,
+    age: Option<u32>,
+    phone_number: Option<String>,
+    address: Option<String>,
+    email: Option<String>) -> Option<Patient> {
+    let care_link_backend_canister_id = get_care_link_backend_id()
+        .expect("failed to get backend canister id");
+
+    let (result,): (Option<Patient>,) = call(
+        care_link_backend_canister_id,
+        "update_patient_admin",
+        (id, full_name, age, phone_number, address, email),
+    ).await
+    .expect("Call to update_patient_admin failed");
+
+    result
+}
+// call the delete_patient from the care_link canister
+#[ic_cdk::update]
+async fn delete_patient_remote(id: Principal) -> bool {
+    let care_link_backend_canister_id = get_care_link_backend_id()
+        .expect("failed to get backend canister id");
+    let (result,): (bool,) = call(
+        care_link_backend_canister_id,
+        "delete_patient",
+        (id,),
+    )
+    .await
+    .expect("Call to delete_patient failed");
+
+    result
+}
+
 
 
 
