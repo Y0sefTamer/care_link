@@ -4,11 +4,23 @@ use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap, S
 use std::{borrow::Cow, cell::RefCell};
 use candid::Principal;
 use ic_stable_structures::StableCell;
+use ic_cdk::api::call::call;
 
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 const MAX_VALUE_SIZE: u32 = 5000;
 
-
+// this the Struct for booking 
+#[derive(CandidType, Deserialize, Clone)]
+struct Booking{
+    patient: Principal,     
+    nurse: String,
+    full_name: String,
+    phone_number: String,
+    date: String,
+    time: String,
+    number_of_hours: String,
+    status: String,
+}
 // this the main Struct for nurse data
 #[derive(CandidType, Deserialize, Clone)]
 struct NurseFullData {
@@ -49,6 +61,13 @@ thread_local! {
             MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(1))),
             0, 
         ).expect("Failed to init counter cell")
+    );
+    //  store the care_link_backend canister id
+     static CARE_LINK_BACKEND_CANISTER_ID: RefCell<StableCell<String, Memory>> = RefCell::new(
+        StableCell::init(
+            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(2))),
+            String::new(), // default empty string
+        ).expect("Failed to init StableCell")
     );
 }
 
@@ -220,6 +239,43 @@ Nurse_MAP.with(|n| n.borrow().get(&user_id))
 fn whoami() -> Principal {
     ic_cdk::caller()
 }
+
+// this section for handle the inter canister call from care_link_backend canister
+
+// this fn to set care_link_backend canister id to store it
+#[ic_cdk::update]
+fn set_care_link_backend_id(id: Principal) {
+    CARE_LINK_BACKEND_CANISTER_ID.with(|cell| {
+        let mut cell = cell.borrow_mut();
+        cell.set(id.to_text()).expect("failed to store booking canister id");
+    });
+}
+// this for get it
+fn get_care_link_backend_id() -> Result<Principal, String> {
+    CARE_LINK_BACKEND_CANISTER_ID.with(|cell| {
+        let cell = cell.borrow();
+        let id_str = cell.get();
+        Principal::from_text(id_str).map_err(|e| e.to_string())
+    })
+}
+// call the get_all_bookings from the care_link canister
+#[ic_cdk::update]
+async fn fetch_bookings_from_care_link_backend() -> Result<Vec<(u64, Booking)>, String> {
+    let care_link_backend_canister_id = get_care_link_backend_id()?;
+
+    let result: Result<(Vec<(u64, Booking)>,), _> = call(
+        care_link_backend_canister_id,
+        "get_all_bookings",
+        ()
+    ).await;
+
+    match result {
+        Ok((bookings,)) => Ok(bookings),
+        Err((code, msg)) => Err(format!("Call failed: {:?} {:?}", code, msg)),
+    }
+}
+
+
 
 // Enable Candid export
 ic_cdk::export_candid!();

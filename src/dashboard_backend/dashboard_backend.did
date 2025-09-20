@@ -7,6 +7,16 @@ type BasicInfo = record {
   first_name : text;
   last_name : text;
 };
+type Booking = record {
+  status : text;
+  patient : principal;
+  number_of_hours : text;
+  date : text;
+  time : text;
+  nurse : text;
+  phone_number : text;
+  full_name : text;
+};
 type ContactInfo = record {
   emergency_contact_number : text;
   emergency_contact_name : text;
@@ -20,6 +30,7 @@ type NurseFullData = record {
   basic_info : opt BasicInfo;
   services : vec text;
 };
+type Result = variant { Ok : vec record { nat64; Booking }; Err : text };
 type WorkInfo = record {
   service_fee : nat32;
   experience_years : nat8;
@@ -28,12 +39,14 @@ type WorkInfo = record {
   preferred_location : text;
 };
 service : {
+  fetch_bookings_from_care_link_backend : () -> (Result);
   generate_user_id : () -> (nat64);
   get_all_nurses : () -> (vec record { nat64; NurseFullData }) query;
   get_nurse_profile : (nat64) -> (opt NurseFullData) query;
   save_nurse_profile : (nat64, NurseFullData) -> ();
   set_address_info : (nat64, text, text, text) -> ();
   set_basic_info : (text, text, text, text, nat32, text) -> (nat64);
+  set_care_link_backend_id : (principal) -> ();
   set_contact_info : (nat64, text, text, text, text) -> ();
   set_services : (nat64, vec text) -> ();
   set_work_info : (nat64, nat8, blob, text, text, nat32) -> ();
