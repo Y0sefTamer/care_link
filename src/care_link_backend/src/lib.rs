@@ -50,6 +50,50 @@ impl BoundedStorable for Booking {
     const IS_FIXED_SIZE: bool = false;
 }
 
+// this the main struct for patiant
+#[derive(CandidType, Deserialize, Clone)]
+struct Patient{
+    full_name: String,
+    age: u32,
+    phone_number: String,
+    address: String,
+    email: String,
+}
+// this is for Storge
+impl Storable for Patient {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        Cow::Owned(Encode!(self).unwrap())
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        Decode!(bytes.as_ref(), Patient).unwrap()
+    }
+    
+}
+
+impl BoundedStorable for Patient {
+    const MAX_SIZE: u32 = MAX_VALUE_SIZE;
+    const IS_FIXED_SIZE: bool = false;
+}
+// Wrapper for Principal
+#[derive(Clone, Ord, PartialOrd, Eq, PartialEq, Debug)]
+struct StorablePrincipal(Principal);
+
+impl Storable for StorablePrincipal {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        Cow::Owned(self.0.as_slice().to_vec())
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        StorablePrincipal(Principal::from_slice(&bytes))
+    }
+}
+
+impl BoundedStorable for StorablePrincipal {
+    const MAX_SIZE: u32 = 29; // طول Principal = 29 بايت
+    const IS_FIXED_SIZE: bool = false;
+}
+
 thread_local! {
      static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
     RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
@@ -57,6 +101,11 @@ thread_local! {
      static BOOKING_MAP: RefCell<StableBTreeMap<u64, Booking, Memory>> = RefCell::new(StableBTreeMap::init(
         MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
     ));
+
+    static PATIENT_MAP: RefCell<StableBTreeMap<StorablePrincipal, Patient, Memory>> =
+        RefCell::new(StableBTreeMap::init(
+            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(3)))
+        ));
 
     // generate user id
      static USER_COUNTER: RefCell<StableCell<u64, Memory>> = RefCell::new(
@@ -231,6 +280,93 @@ async fn fetch_nurses_from_dashboard() -> Result<Vec<(u64, NurseFullData)>, Stri
         Ok((nurses,)) => Ok(nurses),
         Err((code, msg)) => Err(format!("Call failed: {:?} {:?}", code, msg)),
     }
+}
+
+// this section for Add patiant
+// update fn
+#[ic_cdk::update]
+fn add_patient(
+    full_name: String,
+    age: u32,
+    phone_number: String,
+    address: String,
+    email: String) -> Result<Patient, String> {
+    let caller = ic_cdk::caller();
+    PATIENT_MAP.with(|p| {
+        let mut store = p.borrow_mut();
+        if store.get(&StorablePrincipal(caller)).is_some() {
+            return Err("Patient already exists".to_string());
+        }
+        let new_patient = Patient {
+            full_name,
+            age,
+            phone_number,
+            address,
+            email,
+        };
+        store.insert(StorablePrincipal(caller), new_patient.clone());
+        Ok(new_patient)
+    })
+}
+
+#[ic_cdk::update]
+fn update_patient(
+    full_name: Option<String>,
+    age: Option<u32>,
+    phone_number: Option<String>,
+    address: Option<String>,
+    email: Option<String>) -> Option<Patient> {
+    let caller = ic_cdk::caller();
+    PATIENT_MAP.with(|p| {
+        let mut store = p.borrow_mut();
+        if let Some(mut patient) = store.get(&StorablePrincipal(caller)) {
+            if let Some(v) = full_name { patient.full_name = v; }
+            if let Some(v) = age { patient.age = v; }
+            if let Some(v) = phone_number { patient.phone_number = v; }
+            if let Some(v) = address { patient.address = v; }
+            if let Some(v) = email { patient.email = v; }
+            store.insert(StorablePrincipal(caller), patient.clone());
+            Some(patient)
+        } else {
+            None
+        }
+    })
+}
+
+#[ic_cdk::update]
+fn delete_patient() -> bool {
+    let caller = ic_cdk::caller();
+    PATIENT_MAP.with(|p| {
+        let mut store = p.borrow_mut();
+        store.remove(&StorablePrincipal(caller)).is_some()
+    })
+}
+// query fn 
+#[ic_cdk::query]
+fn get_all_patients() -> Vec<(Principal, Patient)> {
+    PATIENT_MAP.with(|p| {
+        let store = p.borrow();
+        store.iter()
+            .map(|(k, v)| (k.0, v.clone())) 
+            .collect()
+    })
+}
+// this if u want to see  specific patient in the dashboard
+#[ic_cdk::query]
+fn get_patient(id: Principal) -> Option<Patient> {
+    PATIENT_MAP.with(|p| {
+        let store = p.borrow();
+        store.get(&StorablePrincipal(id))
+    })
+}
+// this if u want the patient see his data
+#[ic_cdk::query]
+fn get_my_patient() -> Option<Patient> {
+    let caller = ic_cdk::caller();
+    PATIENT_MAP.with(|p| {
+        let store = p.borrow();
+        store.get(&StorablePrincipal(caller))
+    })
 }
 
 // Enable Candid export
