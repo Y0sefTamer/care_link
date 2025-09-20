@@ -1,3 +1,12 @@
+type AddressInfo = record { street : text; country : text; city : text };
+type BasicInfo = record {
+  age : nat32;
+  designation : text;
+  email : text;
+  gender : text;
+  first_name : text;
+  last_name : text;
+};
 type Booking = record {
   status : text;
   patient : principal;
@@ -8,12 +17,38 @@ type Booking = record {
   phone_number : text;
   full_name : text;
 };
+type ContactInfo = record {
+  emergency_contact_number : text;
+  emergency_contact_name : text;
+  relation_to_emergency_contact : text;
+  phone_number : text;
+};
+type NurseFullData = record {
+  work_info : opt WorkInfo;
+  address_info : opt AddressInfo;
+  contact_info : opt ContactInfo;
+  basic_info : opt BasicInfo;
+  services : vec text;
+};
 type Result = variant { Ok; Err : text };
+type Result_1 = variant {
+  Ok : vec record { nat64; NurseFullData };
+  Err : text;
+};
+type WorkInfo = record {
+  service_fee : nat32;
+  experience_years : nat8;
+  certification_image : blob;
+  available_shift : text;
+  preferred_location : text;
+};
 service : {
   confirm_booking : (nat64) -> (Result);
   create_booking : (text, text, text, text, text, text, text) -> (nat64);
+  fetch_nurses_from_dashboard : () -> (Result_1);
   generate_user_id : () -> (nat64);
   get_all_bookings : () -> (vec record { nat64; Booking }) query;
   get_my_bookings : () -> (vec record { nat64; Booking }) query;
+  set_dashboard_backend_id : (principal) -> ();
   whoami : () -> (principal) query;
 }
