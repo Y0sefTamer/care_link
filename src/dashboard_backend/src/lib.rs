@@ -9,6 +9,16 @@ use ic_cdk::api::call::call;
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 const MAX_VALUE_SIZE: u32 = 5000;
 
+// this the main struct for patiant
+#[derive(CandidType, Deserialize, Clone)]
+struct Patient{
+    full_name: String,
+    age: u32,
+    phone_number: String,
+    address: String,
+    email: String,
+}
+
 // this the Struct for booking 
 #[derive(CandidType, Deserialize, Clone)]
 struct Booking{
@@ -21,6 +31,7 @@ struct Booking{
     number_of_hours: String,
     status: String,
 }
+
 // this the main Struct for nurse data
 #[derive(CandidType, Deserialize, Clone)]
 struct NurseFullData {
@@ -271,6 +282,22 @@ async fn fetch_bookings_from_care_link_backend() -> Result<Vec<(u64, Booking)>, 
 
     match result {
         Ok((bookings,)) => Ok(bookings),
+        Err((code, msg)) => Err(format!("Call failed: {:?} {:?}", code, msg)),
+    }
+}
+// call the get_all_patients from the care_link canister
+#[ic_cdk::update]
+async fn fetch_patients_from_care_link_backend() -> Result<Vec<(Principal, Patient)>, String> {
+    let care_link_backend_canister_id = get_care_link_backend_id()?;
+
+    let result: Result<(Vec<(Principal, Patient)>,), _> = call(
+        care_link_backend_canister_id,
+        "get_all_patients",
+        ()
+    ).await;
+
+    match result {
+        Ok((patient,)) => Ok(patient),
         Err((code, msg)) => Err(format!("Call failed: {:?} {:?}", code, msg)),
     }
 }

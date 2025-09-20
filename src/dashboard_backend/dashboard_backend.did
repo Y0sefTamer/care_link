@@ -30,7 +30,15 @@ type NurseFullData = record {
   basic_info : opt BasicInfo;
   services : vec text;
 };
+type Patient = record {
+  age : nat32;
+  email : text;
+  address : text;
+  phone_number : text;
+  full_name : text;
+};
 type Result = variant { Ok : vec record { nat64; Booking }; Err : text };
+type Result_1 = variant { Ok : vec record { principal; Patient }; Err : text };
 type WorkInfo = record {
   service_fee : nat32;
   experience_years : nat8;
@@ -40,6 +48,7 @@ type WorkInfo = record {
 };
 service : {
   fetch_bookings_from_care_link_backend : () -> (Result);
+  fetch_patients_from_care_link_backend : () -> (Result_1);
   generate_user_id : () -> (nat64);
   get_all_nurses : () -> (vec record { nat64; NurseFullData }) query;
   get_nurse_profile : (nat64) -> (opt NurseFullData) query;
