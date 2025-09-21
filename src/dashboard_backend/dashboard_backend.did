@@ -47,6 +47,7 @@ type WorkInfo = record {
   preferred_location : text;
 };
 service : {
+  delete_nurse : (nat64) -> (bool);
   delete_patient_remote : (principal) -> (bool);
   fetch_bookings_from_care_link_backend : () -> (Result);
   fetch_patients_from_care_link_backend : () -> (Result_1);

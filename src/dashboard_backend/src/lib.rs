@@ -62,7 +62,7 @@ thread_local! {
      static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
     RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
-     static Nurse_MAP: RefCell<StableBTreeMap<u64, NurseFullData, Memory>> = RefCell::new(StableBTreeMap::init(
+     static NURSE_MAP: RefCell<StableBTreeMap<u64, NurseFullData, Memory>> = RefCell::new(StableBTreeMap::init(
         MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
     ));
 
@@ -145,7 +145,7 @@ designation: String) -> u64{
 
      let user_id = generate_user_id();
 
-    Nurse_MAP.with(|n|{
+    NURSE_MAP.with(|n|{
         let mut store = n.borrow_mut();
         let mut nurse_profile = store.get(&user_id).unwrap_or_else(|| NurseFullData{
     basic_info: None,
@@ -167,7 +167,7 @@ fn set_address_info(
     country: String,
     city: String, 
     street: String) {
-    Nurse_MAP.with(|n| {
+    NURSE_MAP.with(|n| {
         let mut store = n.borrow_mut();
         if let Some(mut nurse_profile) = store.get(&user_id) {
             nurse_profile.address_info = Some(AddressInfo { country, city, street });
@@ -183,7 +183,7 @@ fn set_contact_info(
     emergency_contact_name: String,
     emergency_contact_number: String,
     relation_to_emergency_contact: String) {
-    Nurse_MAP.with(|n| {
+    NURSE_MAP.with(|n| {
         let mut store = n.borrow_mut();
         if let Some(mut nurse_profile) = store.get(&user_id) {
             nurse_profile.contact_info = Some(ContactInfo { phone_number, emergency_contact_name, emergency_contact_number, relation_to_emergency_contact });
@@ -200,7 +200,7 @@ fn set_work_info(
     available_shift: String,
     preferred_location: String,
     service_fee: u32) {
-    Nurse_MAP.with(|n| {
+    NURSE_MAP.with(|n| {
         let mut store = n.borrow_mut();
         if let Some(mut nurse_profile) = store.get(&user_id) {
             nurse_profile.work_info = Some(WorkInfo { experience_years, certification_image, available_shift, preferred_location, service_fee });
@@ -211,7 +211,7 @@ fn set_work_info(
 
 #[ic_cdk::update]
 fn set_services(user_id: u64, services: Vec<String>) {
-    Nurse_MAP.with(|n| {
+    NURSE_MAP.with(|n| {
         let mut store = n.borrow_mut();
         if let Some(mut nurse_profile) = store.get(&user_id) {
             nurse_profile.services = services;
@@ -223,10 +223,17 @@ fn set_services(user_id: u64, services: Vec<String>) {
 
 #[ic_cdk::update]
 fn save_nurse_profile(user_id: u64, profile: NurseFullData) {
-    Nurse_MAP.with(|n| {
+    NURSE_MAP.with(|n| {
         let mut store = n.borrow_mut();
         store.insert(user_id, profile);
     });
+}
+#[ic_cdk::update]
+fn delete_nurse(id: u64) -> bool {
+    NURSE_MAP.with(|n| {
+        let mut store = n.borrow_mut();
+        store.remove(&id).is_some()
+    })
 }
 
 
@@ -234,7 +241,7 @@ fn save_nurse_profile(user_id: u64, profile: NurseFullData) {
 
 #[ic_cdk::query]
 fn get_all_nurses() -> Vec<(u64, NurseFullData)> {
-    Nurse_MAP.with(|n| {
+    NURSE_MAP.with(|n| {
         let store = n.borrow();
         store.iter().collect()
     })
@@ -242,7 +249,7 @@ fn get_all_nurses() -> Vec<(u64, NurseFullData)> {
 
 #[ic_cdk::query]
 fn get_nurse_profile(user_id: u64) -> Option<NurseFullData>{
-Nurse_MAP.with(|n| n.borrow().get(&user_id))
+NURSE_MAP.with(|n| n.borrow().get(&user_id))
 }
 
 
