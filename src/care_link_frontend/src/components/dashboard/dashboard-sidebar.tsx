@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
@@ -14,9 +14,9 @@ import {
   Users,
   UserCheck,
   Calendar,
-  MessageSquare,
-  HeadphonesIcon,
   LogOut,
+  LifeBuoy,
+  MessageSquare
 } from "lucide-react";
 import carelinkLogo from "@/assets/carelink-logo.png";
 import { useAuth } from "@/context/AuthContext";
@@ -25,7 +25,9 @@ const sidebarItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Patients", url: "/patients", icon: Users },
   { title: "Nurses", url: "/nurses", icon: UserCheck },
-  { title: "Bookings", url: "/bookings", icon: Calendar }
+  { title: "Bookings", url: "/bookings", icon: Calendar },
+  { title: "Messages", url: "/user-messages", icon: MessageSquare },
+  { title: "Support", url: "/admin-messages", icon: LifeBuoy },
 ];
 
 interface DashboardSidebarProps {
@@ -47,9 +49,11 @@ export function DashboardSidebar({ isOpen = false, onClose }: DashboardSidebarPr
       <SidebarContent className="flex flex-col h-full justify-between items-center overflow-visible">
 
         {/* Logo & Project Name */}
-        <div className="mt-12 p-6 flex items-center space-x-3">
-          <img src={carelinkLogo} alt="CareLink Logo" className="w-10 h-10" />
-          <span className="text-3xl italic font-bold text-black dark:text-white">CareLink</span>
+        <div className="mt-12 p-6  space-x-3">
+          <Link className="flex items-center justify-center" to="/">
+            <img src={carelinkLogo} alt="CareLink Logo" className="w-10 h-10" />
+            <span className="text-3xl italic font-bold text-black dark:text-white">CareLink</span>
+          </Link>
         </div>
 
         {/* Navigation Links */}

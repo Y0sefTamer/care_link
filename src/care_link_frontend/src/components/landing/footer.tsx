@@ -1,25 +1,24 @@
 import { Facebook, Linkedin, Instagram } from "lucide-react";
 import carelinkLogo from "@/assets/carelink-logo.png";
+import { NavLink } from "react-router-dom";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { name: "Home", href: "#home" },
-    { name: "Services", href: "#services" },
-    { name: "About Us", href: "#about" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
+    { name: "About Us", href: "/about" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const importantLinks = [
-    { name: "Book Appointment", href: "#book" },
-    { name: "Intake Form", href: "#intake" },
+    { name: "Book Appointment", href: "/booking-form" },
   ];
 
   const helpCenter = [
-    { name: "About Us", href: "#about" },
-    { name: "Contact Us", href: "#contact" },
-    { name: "Pricing", href: "#pricing" },
+    { name: "About Us", href: "/about" },
+    { name: "Contact Us", href: "/contact" },
   ];
 
   return (
@@ -30,7 +29,7 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <img src={carelinkLogo} alt="CareLink Logo" className="h-8 w-8" />
-              <span className="text-xl font-semibold italic text-primary">CareLink</span>
+              <span className="text-xl font-semibold text-primary">CareLink</span>
             </div>
             <p className="text-muted-foreground text-sm">
               Professional home healthcare services delivered with compassion and expertise. Your health, our priority.
@@ -54,9 +53,9 @@ export function Footer() {
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                  <NavLink to={link.href} className="text-muted-foreground hover:text-primary transition-colors text-sm">
                     {link.name}
-                  </a>
+                  </NavLink>
                 </li>
               ))}
             </ul>

@@ -12,7 +12,7 @@ export default function Login() {
     const handleLogin = async () => {
         await login();
         toast.success("Logged in successfully!");
-        navigate("/");
+        navigate("/login-page");
     };
 
     const handleLogout = async () => {

@@ -114,7 +114,7 @@ export default function Bookings() {
                 <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-4 py-3 border rounded-lg bg-transparent text-gray-700 dark:text-gray-200"
+                    className="px-4 py-3 border rounded-lg bg-primary-foreground text-gray-700 dark:text-gray-200"
                 >
                     <option value="All">All Statuses</option>
                     <option value="Approved">Approved</option>

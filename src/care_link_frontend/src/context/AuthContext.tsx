@@ -81,13 +81,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await logoutUtil();
         setPrincipal(null);
         setIsAuthenticated(false);
-        localStorage.removeItem("principal");
+        localStorage.clear();
     };
 
     const adminLogout = () => {
         setPrincipal(null);
         setIsAdminAuthenticated(false);
-        localStorage.removeItem("isAdmin");
+        localStorage.clear();
         navigate("/admin-login");
     };
 

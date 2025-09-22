@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LogoutDialog } from "@/components/LogoutDialog";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner"
-
+import { ShoppingBag } from "lucide-react"
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
@@ -25,6 +25,7 @@ export function Navbar() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
+    { name: "Pharmacy", href: "/pharmacy" },
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
@@ -37,11 +38,11 @@ export function Navbar() {
         transition={{ duration: 0.5 }}
         className="bg-background/95 backdrop-blur border-b border-border sticky top-0 z-50"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-16">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate("/")}>
               <img src={carelinkLogo} alt="CareLink Logo" className="h-10 w-8" />
-              <span className="text-xl font-semibold italic">CareLink</span>
+              <span className="text-xl font-semibold text-gradient-primary">CareLink</span>
             </div>
 
             {/* Desktop */}
@@ -65,6 +66,10 @@ export function Navbar() {
                   Logout
                 </Button>
               )}
+
+              <div className="cursor-pointer" onClick={() => navigate("/shopping")}>
+                <ShoppingBag h-8 w-8 />
+              </div>
             </div>
 
             {/* Mobile */}
