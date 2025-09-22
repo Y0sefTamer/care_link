@@ -2,22 +2,61 @@
 title: Care Link - README
 ---
 
-# 📖 Project Description
+# 🏥 Care Link
 
-Care Link is a decentralized platform built on the Internet Computer
-(ICP) that connects families with trusted caregivers. The project solves
-the problems of trust, access, and transparency in home healthcare by
-leveraging the security and scalability of blockchain technology.\
-\
-Care Link provides a reliable way for families to:\
-- Find and book verified caregivers\
-- Track care sessions transparently on-chain\
-- Ensure secure payments with no intermediaries\
-- Build trust through decentralized verification\
-\
-By using ICP canisters, the platform ensures decentralized backend logic
-and tamper-proof data storage, making healthcare interactions safe and
-transparent.
+> **Decentralized Healthcare Platform on ICP**  
+> Connecting families with trusted caregivers & medical supplies using blockchain technology.
+
+---
+
+## 📌 Problem Statement
+Finding a **reliable caregiver** is often difficult:  
+- Families spend hours searching without guarantees of trust.  
+- Payments are unsafe or involve high fees.  
+- Transparency in care sessions is almost non-existent.  
+- Access to **medical supplies** is fragmented and inconvenient.  
+
+---
+
+## 💡 Our Solution
+**Care Link** is a decentralized platform built on the **Internet Computer (ICP)** that solves these challenges by:  
+- Providing **verified caregiver profiles** with on-chain trust mechanisms.  
+- Enabling **transparent booking & care session tracking** recorded on the blockchain.  
+- Supporting **secure, intermediary-free payments**.  
+- Offering a **built-in medical supplies marketplace** so families can order essential items directly.  
+
+We also validated our idea with a **waiting list survey**, receiving interest from people in Egypt, Nigeria, Russia, the US, and more. The majority highlighted the difficulty of finding *trusted caregivers* — confirming the problem we’re solving.
+
+---
+
+
+## ✨ Key Features
+- 🔒 **Verified Caregivers**: on-chain profiles with ratings & credentials.  
+- 📅 **Easy Booking**: choose a date, time, and caregiver in just a few clicks.  
+- 💳 **Secure Payments**: powered by ICP canisters & Plug Wallet/Internet Identity.  
+- 📝 **Transparent Records**: all care sessions tracked & verifiable.  
+- 🛒 **Medical Supplies Marketplace**: order healthcare products directly from the platform.  
+- 📱 **Responsive Design**: works seamlessly on desktop & mobile.  
+
+---
+
+## 🏗️ Architecture
+**Frontend** → React (connects via `@dfinity/agent`)  
+**Backend** → ICP Canisters (Rust for logic & storage)  
+**Auth** → Internet Identity / Plug Wallet  
+**Payments** → On-chain with ICP cycles & smart contracts  
+**Storage** → Tamper-proof decentralized storage for bookings, sessions, and reviews  
+
+---
+
+## 🛠️ Tech Stack
+- **ICP Canisters** – decentralized backend logic  
+- **Rust ** – smart contract languages  
+- **React ** – frontend web app  
+- **TailwindCSS** – responsive UI styling  
+- **GitHub Actions** – CI/CD for deployment  
+
+---
 
 # ⚙️ Local Development Setup
 
